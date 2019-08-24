@@ -39,7 +39,7 @@ public abstract class ConsumerRecord<K, V, H> {
   @Min(0)
   protected long offset;
 
-  public ConsumerRecord(String topic, K key, V value,H headers, int partition, long offset) {
+  public ConsumerRecord(String topic, K key, V value, H headers, int partition, long offset) {
     this.topic = topic;
     this.key = key;
     this.value = value;

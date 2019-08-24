@@ -31,7 +31,7 @@ public class BinaryConsumerRecord extends ConsumerRecord<byte[], byte[], byte[]>
       @JsonProperty("key") String key, @JsonProperty("value") String value, @JsonProperty("headers") String headers,
       @JsonProperty("partition") int partition, @JsonProperty("offset") long offset
   ) throws IOException {
-    super(topic, decodeBinary(key, "key"), decodeBinary(value, "value"), decodeBinary(value, "headers"), partition, offset);
+    super(topic, decodeBinary(key, "key"), decodeBinary(value, "value"), decodeBinary(headers, "headers"), partition, offset);
 
     try {
       this.value = EntityUtils.parseBase64Binary(value);

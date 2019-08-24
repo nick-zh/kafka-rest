@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.Min;
 
 public class JsonTopicProduceRecord extends JsonProduceRecord
-    implements TopicProduceRecord<Object, Object> {
+    implements TopicProduceRecord<Object, Object, Object> {
 
   // When producing to a topic, a partition may be explicitly requested.
   @Min(0)
@@ -31,14 +31,23 @@ public class JsonTopicProduceRecord extends JsonProduceRecord
   public JsonTopicProduceRecord(
       @JsonProperty("key") Object key,
       @JsonProperty("value") Object value,
+      @JsonProperty("headers") Object headers,
       @JsonProperty("partition") Integer partition
   ) {
-    super(key, value);
+    super(key, value, headers);
     this.partition = partition;
   }
 
+  public JsonTopicProduceRecord(Object value, Object headers, Integer partition) {
+    this(null, value, headers, partition);
+  }
+
+  public JsonTopicProduceRecord(Object key, Object value, Object headers) {
+    this(key, value, headers, null);
+  }
+
   public JsonTopicProduceRecord(Object value, Integer partition) {
-    this(null, value, partition);
+    this(null, value, null, partition);
   }
 
   @Override

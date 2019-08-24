@@ -23,12 +23,12 @@ import java.util.Arrays;
 
 import io.confluent.rest.validation.ConstraintViolations;
 
-public class BinaryProduceRecord extends ProduceRecordBase<byte[], byte[]> {
+public class BinaryProduceRecord extends ProduceRecordBase<byte[], byte[], byte[]> {
 
   @JsonCreator
-  public BinaryProduceRecord(@JsonProperty("key") String key, @JsonProperty("value") String value)
+  public BinaryProduceRecord(@JsonProperty("key") String key, @JsonProperty("value") String value, @JsonProperty("headers") String headers)
       throws IOException {
-    super(null, null);
+    super(null, null, null);
     try {
       this.key = (key != null) ? EntityUtils.parseBase64Binary(key) : null;
     } catch (IllegalArgumentException e) {
@@ -39,14 +39,24 @@ public class BinaryProduceRecord extends ProduceRecordBase<byte[], byte[]> {
     } catch (IllegalArgumentException e) {
       throw ConstraintViolations.simpleException("Record value contains invalid base64 encoding");
     }
+    try {
+      this.headers = (value != headers) ? EntityUtils.parseBase64Binary(headers) : null;
+    } catch (IllegalArgumentException e) {
+      throw ConstraintViolations.simpleException("Record headers contains invalid base64 encoding");
+    }
+  }
+
+  public BinaryProduceRecord(byte[] key, byte[] value, byte[] headers) {
+    super(key, value, headers);
   }
 
   public BinaryProduceRecord(byte[] key, byte[] value) {
-    super(key, value);
+    super(key, value, null);
   }
 
+
   public BinaryProduceRecord(byte[] unencodedValue) {
-    this(null, unencodedValue);
+    this(null, unencodedValue, null);
   }
 
   @Override
@@ -59,6 +69,12 @@ public class BinaryProduceRecord extends ProduceRecordBase<byte[], byte[]> {
   @JsonProperty("value")
   public String getJsonValue() {
     return (value == null ? null : EntityUtils.encodeBase64Binary(value));
+  }
+
+  @Override
+  @JsonProperty("headers")
+  public String getJsonHeaders() {
+    return (headers == null ? null : EntityUtils.encodeBase64Binary(headers));
   }
 
   @Override
@@ -78,6 +94,9 @@ public class BinaryProduceRecord extends ProduceRecordBase<byte[], byte[]> {
     if (!Arrays.equals(value, that.value)) {
       return false;
     }
+    if (!Arrays.equals(headers, that.headers)) {
+      return false;
+    }
 
     return true;
   }
@@ -86,6 +105,7 @@ public class BinaryProduceRecord extends ProduceRecordBase<byte[], byte[]> {
   public int hashCode() {
     int result = key != null ? Arrays.hashCode(key) : 0;
     result = 31 * result + (value != null ? Arrays.hashCode(value) : 0);
+    result = result + (headers != null ? Arrays.hashCode(headers) : 0);
     return result;
   }
 }

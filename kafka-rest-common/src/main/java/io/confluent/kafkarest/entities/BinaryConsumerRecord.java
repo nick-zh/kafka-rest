@@ -24,14 +24,14 @@ import java.util.Objects;
 
 import io.confluent.rest.validation.ConstraintViolations;
 
-public class BinaryConsumerRecord extends ConsumerRecord<byte[], byte[]> {
+public class BinaryConsumerRecord extends ConsumerRecord<byte[], byte[], byte[]> {
 
   @JsonCreator
   public BinaryConsumerRecord(@JsonProperty("topic") String topic,
-      @JsonProperty("key") String key, @JsonProperty("value") String value,
+      @JsonProperty("key") String key, @JsonProperty("value") String value, @JsonProperty("headers") String headers,
       @JsonProperty("partition") int partition, @JsonProperty("offset") long offset
   ) throws IOException {
-    super(topic, decodeBinary(key, "key"), decodeBinary(value, "value"), partition, offset);
+    super(topic, decodeBinary(key, "key"), decodeBinary(value, "value"), decodeBinary(value, "headers"), partition, offset);
 
     try {
       this.value = EntityUtils.parseBase64Binary(value);
@@ -40,8 +40,8 @@ public class BinaryConsumerRecord extends ConsumerRecord<byte[], byte[]> {
     }
   }
 
-  public BinaryConsumerRecord(String topic, byte[] key, byte[] value, int partition, long offset) {
-    super(topic, key, value, partition, offset);
+  public BinaryConsumerRecord(String topic, byte[] key, byte[] value, byte[] headers, int partition, long offset) {
+    super(topic, key, value, headers, partition, offset);
   }
 
   @Override
@@ -63,6 +63,15 @@ public class BinaryConsumerRecord extends ConsumerRecord<byte[], byte[]> {
   }
 
   @Override
+  @JsonProperty("headers")
+  public String getJsonHeaders() {
+    if (headers == null) {
+      return null;
+    }
+    return EntityUtils.encodeBase64Binary(headers);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -75,12 +84,14 @@ public class BinaryConsumerRecord extends ConsumerRecord<byte[], byte[]> {
            && offset == that.offset
            && Objects.equals(topic, that.topic)
            && Arrays.equals(key, that.key)
-           && Arrays.equals(value, that.value);
+           && Arrays.equals(value, that.value)
+           && Arrays.equals(headers, that.headers);
+
   }
 
   @Override
   public int hashCode() {
-    return Arrays.deepHashCode(new Object[] { topic, key, value, partition, offset});
+    return Arrays.deepHashCode(new Object[] { topic, key, value, headers, partition, offset});
   }
 
   private static byte[] decodeBinary(String binary, String field) {

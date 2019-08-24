@@ -15,11 +15,13 @@
 
 package io.confluent.kafkarest.entities;
 
-public interface ProduceRecord<K, V> {
+public interface ProduceRecord<K, V, H> {
 
   public K getKey();
 
   public V getValue();
+
+  public H getHeaders();
 
   // Non-standard naming so we can unify the interfaces of ProduceRecord and TopicProduceRecord,
   // but get Jackson to behave properly, not serializing the value & triggering errors if the

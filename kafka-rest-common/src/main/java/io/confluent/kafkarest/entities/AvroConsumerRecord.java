@@ -19,15 +19,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class AvroConsumerRecord extends ConsumerRecord<JsonNode, JsonNode> {
+public class AvroConsumerRecord extends ConsumerRecord<JsonNode, JsonNode, JsonNode> {
 
   @JsonCreator
   public AvroConsumerRecord(
       @JsonProperty("topic") String topic,
-      @JsonProperty("key") JsonNode key, @JsonProperty("value") JsonNode value,
+      @JsonProperty("key") JsonNode key, @JsonProperty("value") JsonNode value, @JsonProperty("headers") JsonNode headers,
       @JsonProperty("partition") int partition, @JsonProperty("offset") long offset
   ) {
-    super(topic, key, value, partition, offset);
+    super(topic, key, value, headers, partition, offset);
   }
 
 }

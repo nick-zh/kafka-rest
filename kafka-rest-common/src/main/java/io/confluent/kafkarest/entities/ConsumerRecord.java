@@ -23,7 +23,7 @@ import java.util.Objects;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public abstract class ConsumerRecord<K, V> {
+public abstract class ConsumerRecord<K, V, H> {
 
   protected String topic;
 
@@ -31,16 +31,19 @@ public abstract class ConsumerRecord<K, V> {
   @NotNull
   protected V value;
 
+  protected H headers;
+
   @Min(0)
   protected int partition;
 
   @Min(0)
   protected long offset;
 
-  public ConsumerRecord(String topic, K key, V value, int partition, long offset) {
+  public ConsumerRecord(String topic, K key, V value,H headers, int partition, long offset) {
     this.topic = topic;
     this.key = key;
     this.value = value;
+    this.headers = headers;
     this.partition = partition;
     this.offset = offset;
   }
@@ -81,8 +84,18 @@ public abstract class ConsumerRecord<K, V> {
   }
 
   @JsonIgnore
-  public void setValue(V value) {
-    this.value = value;
+  public void setHeaders(H headers) {
+    this.headers = headers;
+  }
+
+  @JsonIgnore
+  public H getHeaders() {
+    return headers;
+  }
+
+  @JsonProperty("key")
+  public Object getJsonKey() {
+    return key;
   }
 
   @JsonProperty
@@ -113,17 +126,18 @@ public abstract class ConsumerRecord<K, V> {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ConsumerRecord<?, ?> that = (ConsumerRecord<?, ?>) o;
+    ConsumerRecord<?, ?, ?> that = (ConsumerRecord<?, ?, ?>) o;
     return partition == that.partition
            && offset == that.offset
            && Objects.equals(topic, that.topic)
            && Objects.equals(key, that.key)
-           && Objects.equals(value, that.value);
+           && Objects.equals(value, that.value)
+           && Objects.equals(headers, that.headers);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(topic, key, value, partition, offset);
+    return Objects.hash(topic, key, value, headers, partition, offset);
   }
 
 }

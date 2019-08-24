@@ -22,7 +22,7 @@ import io.confluent.kafkarest.entities.ProduceRecord;
 /**
  * Wrapper for KafkaProducer that handles schemas.
  */
-public interface RestProducer<K, V> {
+public interface RestProducer<K, V, H> {
 
   /**
    * Produces messages to the topic, handling any conversion, schema lookups or other operations
@@ -30,7 +30,7 @@ public interface RestProducer<K, V> {
    * the SchemaHolder is updated with the resulting IDs.
    */
   public void produce(ProduceTask task, String topic, Integer partition,
-                      Collection<? extends ProduceRecord<K, V>> records);
+                      Collection<? extends ProduceRecord<K, V, H>> records);
 
   public void close();
 }

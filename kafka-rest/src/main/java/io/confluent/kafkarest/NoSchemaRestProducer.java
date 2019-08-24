@@ -25,7 +25,7 @@ import io.confluent.kafkarest.entities.ProduceRecord;
 /**
  * Wrapper producer for content types which have no associated schema (e.g. binary or JSON).
  */
-public class NoSchemaRestProducer<K, V> implements RestProducer<K, V> {
+public class NoSchemaRestProducer<K, V, H> implements RestProducer<K, V, H> {
 
   private KafkaProducer<K, V> producer;
 
@@ -38,15 +38,15 @@ public class NoSchemaRestProducer<K, V> implements RestProducer<K, V> {
       ProduceTask task,
       String topic,
       Integer partition,
-      Collection<? extends ProduceRecord<K, V>> produceRecords
+      Collection<? extends ProduceRecord<K, V, H>> produceRecords
   ) {
-    for (ProduceRecord<K, V> record : produceRecords) {
+    for (ProduceRecord<K, V, H> record : produceRecords) {
       Integer recordPartition = partition;
       if (recordPartition == null) {
         recordPartition = record.partition();
       }
       producer.send(
-          new ProducerRecord(topic, recordPartition, record.getKey(), record.getValue()),
+          new ProducerRecord(topic, recordPartition, record.getKey(), record.getValue(), record.getHeaders()),
           task.createCallback()
       );
     }

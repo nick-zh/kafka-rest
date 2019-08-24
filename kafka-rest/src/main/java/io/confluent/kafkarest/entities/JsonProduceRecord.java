@@ -18,18 +18,23 @@ package io.confluent.kafkarest.entities;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class JsonProduceRecord extends ProduceRecordBase<Object, Object> {
+public class JsonProduceRecord extends ProduceRecordBase<Object, Object, Object> {
 
   @JsonCreator
   public JsonProduceRecord(
       @JsonProperty("key") Object key,
-      @JsonProperty("value") Object value
+      @JsonProperty("value") Object value,
+      @JsonProperty("headers") Object headers
   ) {
-    super(key, value);
+    super(key, value, headers);
+  }
+
+  public JsonProduceRecord(Object key, Object value) {
+    this(key, value, null);
   }
 
   public JsonProduceRecord(Object value) {
-    this(null, value);
+    this(null, value, null);
   }
 
   @Override
@@ -43,9 +48,9 @@ public class JsonProduceRecord extends ProduceRecordBase<Object, Object> {
 
     JsonProduceRecord that = (JsonProduceRecord) o;
 
-    return key != null
-           ? key.equals(that.key)
-           : that.key == null && !(value != null ? !value.equals(that.value) : that.value != null);
+    return key != null ? key.equals(that.key) : that.key == null
+            && !(value != null ? !value.equals(that.value) : that.value != null)
+            && !(headers != null ? !headers.equals(that.headers) : that.headers != null) ;
 
   }
 
@@ -53,6 +58,7 @@ public class JsonProduceRecord extends ProduceRecordBase<Object, Object> {
   public int hashCode() {
     int result = key != null ? key.hashCode() : 0;
     result = 31 * result + (value != null ? value.hashCode() : 0);
+    result = result + (headers != null ? headers.hashCode() : 0);
     return result;
   }
 }

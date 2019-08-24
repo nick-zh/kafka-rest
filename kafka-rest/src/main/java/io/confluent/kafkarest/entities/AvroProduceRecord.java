@@ -19,18 +19,20 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class AvroProduceRecord extends ProduceRecordBase<JsonNode, JsonNode> {
+public class AvroProduceRecord extends ProduceRecordBase<JsonNode, JsonNode, JsonNode> {
 
   @JsonCreator
   public AvroProduceRecord(
       @JsonProperty("key") JsonNode key,
-      @JsonProperty("value") JsonNode value
+      @JsonProperty("value") JsonNode value,
+      @JsonProperty("headers") JsonNode headers
+
   ) {
-    super(key, value);
+    super(key, value, headers);
   }
 
   public AvroProduceRecord(JsonNode value) {
-    this(null, value);
+    this(null, value, null);
   }
 
   @Override
@@ -41,6 +43,11 @@ public class AvroProduceRecord extends ProduceRecordBase<JsonNode, JsonNode> {
   @Override
   public JsonNode getJsonValue() {
     return value;
+  }
+
+  @Override
+  public JsonNode getJsonHeaders() {
+    return headers;
   }
 
   @Override
@@ -60,6 +67,9 @@ public class AvroProduceRecord extends ProduceRecordBase<JsonNode, JsonNode> {
     if (value != null ? !value.equals(that.value) : that.value != null) {
       return false;
     }
+    if (headers != null ? !headers.equals(that.headers) : that.headers != null) {
+      return false;
+    }
 
     return true;
   }
@@ -68,6 +78,7 @@ public class AvroProduceRecord extends ProduceRecordBase<JsonNode, JsonNode> {
   public int hashCode() {
     int result = key != null ? key.hashCode() : 0;
     result = 31 * result + (value != null ? value.hashCode() : 0);
+    result = result + (headers != null ? headers.hashCode() : 0);
     return result;
   }
 }

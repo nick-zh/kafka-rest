@@ -87,18 +87,18 @@ public class ProducerPool {
     return buildConfig(props, producerProps, producerConfigOverrides);
   }
 
-  private NoSchemaRestProducer<byte[], byte[]> buildBinaryProducer(
+  private NoSchemaRestProducer<byte[], byte[], byte[]> buildBinaryProducer(
       Map<String, Object>
           binaryProps
   ) {
-    return buildNoSchemaProducer(binaryProps, new ByteArraySerializer(), new ByteArraySerializer());
+    return buildNoSchemaProducer(binaryProps, new ByteArraySerializer(), new ByteArraySerializer(), new ByteArraySerializer());
   }
 
-  private NoSchemaRestProducer<Object, Object> buildJsonProducer(Map<String, Object> jsonProps) {
-    return buildNoSchemaProducer(jsonProps, new KafkaJsonSerializer(), new KafkaJsonSerializer());
+  private NoSchemaRestProducer<Object, Object, Object> buildJsonProducer(Map<String, Object> jsonProps) {
+    return buildNoSchemaProducer(jsonProps, new KafkaJsonSerializer(), new KafkaJsonSerializer(), new KafkaJsonSerializer());
   }
 
-  private <K, V> NoSchemaRestProducer<K, V> buildNoSchemaProducer(
+  private <K, V, H> NoSchemaRestProducer<K, V, H> buildNoSchemaProducer(
       Map<String, Object> props,
       Serializer<K> keySerializer,
       Serializer<V> valueSerializer
@@ -107,7 +107,7 @@ public class ProducerPool {
     valueSerializer.configure(props, false);
     KafkaProducer<K, V> producer =
         new KafkaProducer<K, V>(props, keySerializer, valueSerializer);
-    return new NoSchemaRestProducer<K, V>(producer);
+    return new NoSchemaRestProducer<K, V, H>(producer);
   }
 
   private Map<String, Object> buildAvroConfig(
@@ -156,12 +156,12 @@ public class ProducerPool {
     return config;
   }
 
-  public <K, V> void produce(
+  public <K, V, H> void produce(
       String topic,
       Integer partition,
       EmbeddedFormat recordFormat,
       SchemaHolder schemaHolder,
-      Collection<? extends ProduceRecord<K, V>> records,
+      Collection<? extends ProduceRecord<K, V, H>> records,
       ProduceRequestCallback callback
   ) {
     ProduceTask task = new ProduceTask(schemaHolder, records.size(), callback);

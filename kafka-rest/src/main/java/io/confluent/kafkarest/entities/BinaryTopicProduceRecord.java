@@ -22,7 +22,7 @@ import java.io.IOException;
 import javax.validation.constraints.Min;
 
 public class BinaryTopicProduceRecord extends BinaryProduceRecord
-    implements TopicProduceRecord<byte[], byte[]> {
+    implements TopicProduceRecord<byte[], byte[], byte[]> {
 
   // When producing to a topic, a partition may be explicitly requested.
   @Min(0)
@@ -31,27 +31,32 @@ public class BinaryTopicProduceRecord extends BinaryProduceRecord
   public BinaryTopicProduceRecord(
       @JsonProperty("key") String key,
       @JsonProperty("value") String value,
+      @JsonProperty("headers") String headers,
       @JsonProperty("partition") Integer partition
   ) throws IOException {
-    super(key, value);
+    super(key, value, headers);
     this.partition = partition;
   }
 
-  public BinaryTopicProduceRecord(byte[] key, byte[] value, Integer partition) {
-    super(key, value);
+  public BinaryTopicProduceRecord(byte[] key, byte[] value, byte[] headers, Integer partition) {
+    super(key, value, headers);
     this.partition = partition;
+  }
+
+  public BinaryTopicProduceRecord(byte[] key, byte[] value, byte[] headers) {
+    this(key, value, headers, null);
   }
 
   public BinaryTopicProduceRecord(byte[] key, byte[] value) {
-    this(key, value, null);
+    this(key, value, null, null);
   }
 
   public BinaryTopicProduceRecord(byte[] value, Integer partition) {
-    this(null, value, partition);
+    this(null, value, null, partition);
   }
 
   public BinaryTopicProduceRecord(byte[] value) {
-    this(null, value, null);
+    this(null, value, null, null);
   }
 
   @Override

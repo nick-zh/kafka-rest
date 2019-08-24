@@ -18,14 +18,16 @@ package io.confluent.kafkarest.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public abstract class ProduceRecordBase<K, V> implements ProduceRecord<K, V> {
+public abstract class ProduceRecordBase<K, V, H> implements ProduceRecord<K, V, H> {
 
   protected K key;
   protected V value;
+  protected H headers;
 
-  public ProduceRecordBase(@JsonProperty K key, @JsonProperty V value) {
+  public ProduceRecordBase(@JsonProperty K key, @JsonProperty V value, @JsonProperty H headers) {
     this.key = key;
     this.value = value;
+    this.headers = headers;
   }
 
   @JsonIgnore
@@ -44,6 +46,15 @@ public abstract class ProduceRecordBase<K, V> implements ProduceRecord<K, V> {
 
   public void setValue(V value) {
     this.value = value;
+  }
+
+  @JsonIgnore
+  public H getHeaders() {
+    return headers;
+  }
+
+  public void setHeaders(H headers) {
+    this.headers = headers;
   }
 
   @Override
@@ -65,5 +76,13 @@ public abstract class ProduceRecordBase<K, V> implements ProduceRecord<K, V> {
   @JsonProperty("value")
   public Object getJsonValue() {
     return value;
+  }
+
+  /**
+   * Return a JSON-serializable version of the headers. This does not need to handle schemas.
+   */
+  @JsonProperty("headers")
+  public Object getJsonHeaders() {
+    return headers;
   }
 }

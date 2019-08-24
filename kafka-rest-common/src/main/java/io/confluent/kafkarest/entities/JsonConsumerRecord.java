@@ -18,17 +18,18 @@ package io.confluent.kafkarest.entities;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class JsonConsumerRecord extends ConsumerRecord<Object, Object> {
+public class JsonConsumerRecord extends ConsumerRecord<Object, Object, Object> {
 
   @JsonCreator
   public JsonConsumerRecord(
       @JsonProperty("topic") String topic,
       @JsonProperty("key") Object key,
       @JsonProperty("value") Object value,
+      @JsonProperty("headers") Object headers,
       @JsonProperty("partition") int partition,
       @JsonProperty("offset") long offset
   ) {
-    super(topic, key, value, partition, offset);
+    super(topic, key, value, headers, partition, offset);
   }
 
 }

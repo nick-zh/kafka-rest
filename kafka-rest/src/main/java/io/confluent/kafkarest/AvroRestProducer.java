@@ -36,7 +36,7 @@ import io.confluent.kafkarest.entities.ProduceRecord;
 import io.confluent.kafkarest.entities.SchemaHolder;
 import io.confluent.rest.exceptions.RestException;
 
-public class AvroRestProducer implements RestProducer<JsonNode, JsonNode> {
+public class AvroRestProducer implements RestProducer<JsonNode, JsonNode, JsonNode> {
 
   protected final KafkaProducer<Object, Object> producer;
   protected final KafkaAvroSerializer keySerializer;
@@ -58,7 +58,7 @@ public class AvroRestProducer implements RestProducer<JsonNode, JsonNode> {
       ProduceTask task,
       String topic,
       Integer partition,
-      Collection<? extends ProduceRecord<JsonNode, JsonNode>> records
+      Collection<? extends ProduceRecord<JsonNode, JsonNode, JsonNode>> records
   ) {
     SchemaHolder schemaHolder = task.getSchemaHolder();
     Schema keySchema = null;
@@ -108,10 +108,10 @@ public class AvroRestProducer implements RestProducer<JsonNode, JsonNode> {
 
     // Convert everything to Avro before doing any sends so if any conversion fails we can kill
     // the entire request so we don't get partially sent requests
-    ArrayList<ProducerRecord<Object, Object>> kafkaRecords
-        = new ArrayList<ProducerRecord<Object, Object>>();
+    ArrayList<ProducerRecord<Object, Object, Object>> kafkaRecords
+        = new ArrayList<ProducerRecord<Object, Object, Object>>();
     try {
-      for (ProduceRecord<JsonNode, JsonNode> record : records) {
+      for (ProduceRecord<JsonNode, JsonNode, JsonNode> record : records) {
         // Beware of null schemas and NullNodes here: we need to avoid attempting the conversion
         // if there isn't a schema. Validation will have already checked that all the keys/values
         // were NullNodes.
@@ -122,12 +122,12 @@ public class AvroRestProducer implements RestProducer<JsonNode, JsonNode> {
         if (recordPartition == null) {
           recordPartition = record.partition();
         }
-        kafkaRecords.add(new ProducerRecord(topic, recordPartition, key, value));
+        kafkaRecords.add(new ProducerRecord(topic, recordPartition, key, value, record.getHeaders()));
       }
     } catch (ConversionException e) {
       throw Errors.jsonAvroConversionException(e);
     }
-    for (ProducerRecord<Object, Object> rec : kafkaRecords) {
+    for (ProducerRecord<Object, Object, Object> rec : kafkaRecords) {
       producer.send(rec, task.createCallback());
     }
   }

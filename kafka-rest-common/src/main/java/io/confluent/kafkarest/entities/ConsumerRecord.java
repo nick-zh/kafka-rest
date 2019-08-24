@@ -84,8 +84,8 @@ public abstract class ConsumerRecord<K, V, H> {
   }
 
   @JsonIgnore
-  public void setHeaders(H headers) {
-    this.headers = headers;
+  public void setValue(V value) {
+    this.value = value;
   }
 
   @JsonIgnore
@@ -93,9 +93,14 @@ public abstract class ConsumerRecord<K, V, H> {
     return headers;
   }
 
-  @JsonProperty("key")
-  public Object getJsonKey() {
-    return key;
+  @JsonProperty("headers")
+  public Object getJsonHeaders() {
+    return headers;
+  }
+
+  @JsonIgnore
+  public void setHeaders(H headers) {
+    this.headers = headers;
   }
 
   @JsonProperty

@@ -43,7 +43,7 @@ public class MockConsumerConnector implements ConsumerConnector {
   public Set<String> subscribedTopics = new HashSet<String>();
 
   private Time time;
-  private Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>> streamDataSchedules;
+  private Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>> streamDataSchedules;
   private static int consumerTimeoutMs;
   private boolean allowMissingSchedule;
   private boolean messageStreamCreated;
@@ -55,7 +55,7 @@ public class MockConsumerConnector implements ConsumerConnector {
    */
   public MockConsumerConnector(
       Time time, String clientId,
-      Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>> streamDataSchedules,
+      Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>> streamDataSchedules,
       int consumerTimeoutMs,
       boolean allowMissingSchedule) {
     this.time = time;

@@ -63,11 +63,9 @@ public class AvroProduceRecord extends ProduceRecordBase<JsonNode, JsonNode, Jso
 
     if (key != null ? !key.equals(that.key) : that.key != null) {
       return false;
-    }
-    if (value != null ? !value.equals(that.value) : that.value != null) {
+    } else if (value != null ? !value.equals(that.value) : that.value != null) {
       return false;
-    }
-    if (headers != null ? !headers.equals(that.headers) : that.headers != null) {
+    } else if (headers != null ? !headers.equals(that.headers) : that.headers != null) {
       return false;
     }
 

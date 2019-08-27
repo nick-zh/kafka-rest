@@ -20,17 +20,17 @@ import io.confluent.kafkarest.entities.ConsumerRecord;
 /**
  * Simple wrapper for a ConsumerRecord and an approximate serialized size.
  */
-public class ConsumerRecordAndSize<K, V> {
+public class ConsumerRecordAndSize<K, V, H> {
 
-  private final ConsumerRecord<K, V> record;
+  private final ConsumerRecord<K, V, H> record;
   private final long size;
 
-  public ConsumerRecordAndSize(ConsumerRecord<K, V> record, long size) {
+  public ConsumerRecordAndSize(ConsumerRecord<K, V, H> record, long size) {
     this.record = record;
     this.size = size;
   }
 
-  public ConsumerRecord<K, V> getRecord() {
+  public ConsumerRecord<K, V, H> getRecord() {
     return record;
   }
 

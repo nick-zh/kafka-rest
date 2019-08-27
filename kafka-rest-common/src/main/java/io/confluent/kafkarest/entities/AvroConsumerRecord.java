@@ -24,7 +24,9 @@ public class AvroConsumerRecord extends ConsumerRecord<JsonNode, JsonNode, JsonN
   @JsonCreator
   public AvroConsumerRecord(
       @JsonProperty("topic") String topic,
-      @JsonProperty("key") JsonNode key, @JsonProperty("value") JsonNode value, @JsonProperty("headers") JsonNode headers,
+      @JsonProperty("key") JsonNode key,
+      @JsonProperty("value") JsonNode value,
+      @JsonProperty("headers") JsonNode headers,
       @JsonProperty("partition") int partition, @JsonProperty("offset") long offset
   ) {
     super(topic, key, value, headers, partition, offset);

@@ -91,11 +91,23 @@ public class ProducerPool {
       Map<String, Object>
           binaryProps
   ) {
-    return buildNoSchemaProducer(binaryProps, new ByteArraySerializer(), new ByteArraySerializer(), new ByteArraySerializer());
+    return buildNoSchemaProducer(
+            binaryProps,
+            new ByteArraySerializer(),
+            new ByteArraySerializer(),
+            new ByteArraySerializer()
+    );
   }
 
-  private NoSchemaRestProducer<Object, Object, Object> buildJsonProducer(Map<String, Object> jsonProps) {
-    return buildNoSchemaProducer(jsonProps, new KafkaJsonSerializer(), new KafkaJsonSerializer(), new KafkaJsonSerializer());
+  private NoSchemaRestProducer<Object, Object, Object> buildJsonProducer(
+          Map<String, Object> jsonProps
+  ) {
+    return buildNoSchemaProducer(
+            jsonProps,
+            new KafkaJsonSerializer(),
+            new KafkaJsonSerializer(),
+            new KafkaJsonSerializer()
+    );
   }
 
   private <K, V, H> NoSchemaRestProducer<K, V, H> buildNoSchemaProducer(

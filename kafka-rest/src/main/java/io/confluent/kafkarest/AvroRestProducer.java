@@ -122,7 +122,9 @@ public class AvroRestProducer implements RestProducer<JsonNode, JsonNode, JsonNo
         if (recordPartition == null) {
           recordPartition = record.partition();
         }
-        kafkaRecords.add(new ProducerRecord(topic, recordPartition, key, value, record.getHeaders()));
+        kafkaRecords.add(
+                new ProducerRecord(topic, recordPartition, key, value, record.getHeaders())
+        );
       }
     } catch (ConversionException e) {
       throw Errors.jsonAvroConversionException(e);

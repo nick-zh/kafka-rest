@@ -45,13 +45,13 @@ public class MockConsumerQueue implements BlockingQueue<FetchedDataChunk> {
 
   private Time time;
   private PriorityQueue<ScheduledItems> scheduled = new PriorityQueue<ScheduledItems>();
-  private Queue<ConsumerRecord<byte[], byte[]>> ready
-      = new LinkedList<ConsumerRecord<byte[], byte[]>>();
+  private Queue<ConsumerRecord<byte[], byte[], byte[]>> ready
+      = new LinkedList<ConsumerRecord<byte[], byte[], byte[]>>();
 
   public MockConsumerQueue(Time time, Map<Integer,
-      List<ConsumerRecord<byte[], byte[]>>> schedule) {
+      List<ConsumerRecord<byte[], byte[], byte[]>>> schedule) {
     this.time = time;
-    for (Map.Entry<Integer, List<ConsumerRecord<byte[], byte[]>>> item : schedule.entrySet()) {
+    for (Map.Entry<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>> item : schedule.entrySet()) {
       scheduled.add(new ScheduledItems(item.getKey(), item.getValue()));
     }
   }
@@ -112,7 +112,7 @@ public class MockConsumerQueue implements BlockingQueue<FetchedDataChunk> {
     }
 
     if (!ready.isEmpty()) {
-      ConsumerRecord<byte[], byte[]> c = ready.remove();
+      ConsumerRecord<byte[], byte[], byte[]> c = ready.remove();
       // Special case that schedules can use to indicate we should throw an exception
       if (c == null) {
         throw new KafkaException("null value in mock consumer used to trigger KafkaException");
@@ -236,9 +236,9 @@ public class MockConsumerQueue implements BlockingQueue<FetchedDataChunk> {
   private class ScheduledItems implements Comparable<ScheduledItems> {
 
     long time;
-    List<ConsumerRecord<byte[], byte[]>> records;
+    List<ConsumerRecord<byte[], byte[], byte[]>> records;
 
-    private ScheduledItems(long time, List<ConsumerRecord<byte[], byte[]>> records) {
+    private ScheduledItems(long time, List<ConsumerRecord<byte[], byte[], byte[]>> records) {
       this.time = time;
       this.records = records;
     }

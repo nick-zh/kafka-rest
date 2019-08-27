@@ -26,8 +26,11 @@ import io.confluent.rest.validation.ConstraintViolations;
 public class BinaryProduceRecord extends ProduceRecordBase<byte[], byte[], byte[]> {
 
   @JsonCreator
-  public BinaryProduceRecord(@JsonProperty("key") String key, @JsonProperty("value") String value, @JsonProperty("headers") String headers)
-      throws IOException {
+  public BinaryProduceRecord(
+          @JsonProperty("key") String key,
+          @JsonProperty("value") String value,
+          @JsonProperty("headers") String headers
+  ) throws IOException {
     super(null, null, null);
     try {
       this.key = (key != null) ? EntityUtils.parseBase64Binary(key) : null;

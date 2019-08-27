@@ -19,6 +19,6 @@ import java.util.List;
 
 import io.confluent.kafkarest.entities.ConsumerRecord;
 
-public interface ConsumerReadCallback<K, V> {
-  void onCompletion(List<? extends ConsumerRecord<K, V>> records, Exception e);
+public interface ConsumerReadCallback<K, V, H> {
+  void onCompletion(List<? extends ConsumerRecord<K, V, H>> records, Exception e);
 }

@@ -50,8 +50,7 @@ public class JsonProduceRecord extends ProduceRecordBase<Object, Object, Object>
 
     return key != null ? key.equals(that.key) : that.key == null
             && !(value != null ? !value.equals(that.value) : that.value != null)
-            && !(headers != null ? !headers.equals(that.headers) : that.headers != null) ;
-
+            && !(headers != null ? !headers.equals(that.headers) : that.headers != null);
   }
 
   @Override

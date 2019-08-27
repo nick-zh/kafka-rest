@@ -71,7 +71,7 @@ public class ConsumerManagerTest {
   // Setup holding vars for results from callback
   private boolean sawCallback = false;
   private static Exception actualException = null;
-  private static List<? extends ConsumerRecord<byte[], byte[]>> actualRecords = null;
+  private static List<? extends ConsumerRecord<byte[], byte[], byte[]>> actualRecords = null;
   private int actualLength = 0;
   private static List<TopicPartitionOffset> actualOffsets = null;
 
@@ -100,12 +100,12 @@ public class ConsumerManagerTest {
   }
 
   private ConsumerConnector expectCreate(
-      Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>> schedules) {
+      Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>> schedules) {
     return expectCreate(schedules, false, null);
   }
 
   private ConsumerConnector expectCreate(
-      Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>> schedules,
+      Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>> schedules,
       boolean allowMissingSchedule, String requestedId) {
     ConsumerConnector
         consumer =
@@ -122,10 +122,10 @@ public class ConsumerManagerTest {
   // Expect a Kafka consumer to be created, but return it with no data in its queue. Used to test
   // functionality that doesn't rely on actually consuming the data.
   private ConsumerConnector expectCreateNoData(String requestedId) {
-    Map<Integer, List<ConsumerRecord<byte[], byte[]>>> referenceSchedule
-        = new HashMap<Integer, List<ConsumerRecord<byte[], byte[]>>>();
-    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>> schedules
-        = new HashMap<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>>();
+    Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>> referenceSchedule
+        = new HashMap<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>();
+    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>> schedules
+        = new HashMap<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>>();
     schedules.put(topicName, Arrays.asList(referenceSchedule));
 
     return expectCreate(schedules, true, requestedId);
@@ -161,15 +161,15 @@ public class ConsumerManagerTest {
   @Test
   public void testConsumerNormalOps() throws Exception {
     // Tests create instance, read, and delete
-    final List<ConsumerRecord<byte[], byte[]>> referenceRecords = referenceRecords(3);
-    Map<Integer, List<ConsumerRecord<byte[], byte[]>>>
+    final List<ConsumerRecord<byte[], byte[], byte[]>> referenceRecords = referenceRecords(3);
+    Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>
         referenceSchedule =
             new HashMap<>();
     referenceSchedule.put(50, referenceRecords);
 
-    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>>
+    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>>
         schedules =
-        new HashMap<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>>();
+        new HashMap<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>>();
     schedules.put(topicName, Arrays.asList(referenceSchedule));
 
     expectCreate(schedules);
@@ -213,10 +213,10 @@ public class ConsumerManagerTest {
     Integer expectedRequestTimeoutMs = 400;
     properties.setProperty(KafkaRestConfig.CONSUMER_REQUEST_TIMEOUT_MS_CONFIG, expectedRequestTimeoutMs.toString());
     setUp(properties);
-    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>>
+    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>>
             schedules =
             new HashMap<>();
-    Map<Integer, List<ConsumerRecord<byte[], byte[]>>> referenceSchedule = new HashMap<>();
+    Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>> referenceSchedule = new HashMap<>();
     schedules.put(topicName, Arrays.asList(referenceSchedule));
     expectCreate(schedules);
 
@@ -239,12 +239,12 @@ public class ConsumerManagerTest {
     properties.setProperty(KafkaRestConfig.PROXY_FETCH_MIN_BYTES_CONFIG, "1");
     setUp(properties);
 
-    final List<ConsumerRecord<byte[], byte[]>> referenceRecords = referenceRecords(3);
-    Map<Integer, List<ConsumerRecord<byte[], byte[]>>>
+    final List<ConsumerRecord<byte[], byte[], byte[]>> referenceRecords = referenceRecords(3);
+    Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>
             referenceSchedule = new HashMap<>();
     referenceSchedule.put(50, referenceRecords);
 
-    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>>
+    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>>
             schedules = new HashMap<>();
     schedules.put(topicName, Arrays.asList(referenceSchedule));
 
@@ -272,12 +272,12 @@ public class ConsumerManagerTest {
     // global settings should return more than one record immediately
     setUp(properties);
 
-    final List<ConsumerRecord<byte[], byte[]>> referenceRecords = referenceRecords(3);
-    Map<Integer, List<ConsumerRecord<byte[], byte[]>>>
+    final List<ConsumerRecord<byte[], byte[], byte[]>> referenceRecords = referenceRecords(3);
+    Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>
             referenceSchedule = new HashMap<>();
     referenceSchedule.put(50, referenceRecords);
 
-    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>>
+    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>>
             schedules = new HashMap<>();
     schedules.put(topicName, Arrays.asList(referenceSchedule));
 
@@ -306,10 +306,10 @@ public class ConsumerManagerTest {
     Integer globalRequestTimeMs = 1201;
     properties.setProperty(KafkaRestConfig.CONSUMER_REQUEST_TIMEOUT_MS_CONFIG, globalRequestTimeMs.toString());
     setUp(properties);
-    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>>
+    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>>
             schedules =
             new HashMap<>();
-    Map<Integer, List<ConsumerRecord<byte[], byte[]>>> referenceSchedule = new HashMap<>();
+    Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>> referenceSchedule = new HashMap<>();
     schedules.put(topicName, Arrays.asList(referenceSchedule));
     expectCreate(schedules);
 
@@ -333,20 +333,20 @@ public class ConsumerManagerTest {
   public void testConsumerMaxBytesResponse() throws Exception {
     // Tests that when there are more records available than the max bytes to be included in the
     // response, not all of it is returned.
-    final List<ConsumerRecord<byte[], byte[]>> referenceRecords
-        = Arrays.<ConsumerRecord<byte[], byte[]>>asList(
+    final List<ConsumerRecord<byte[], byte[], byte[]>> referenceRecords
+        = Arrays.<ConsumerRecord<byte[], byte[], byte[]>>asList(
         // Don't use 512 as this happens to fall on boundary
-        new BinaryConsumerRecord(topicName, null, new byte[511], 0, 0),
-        new BinaryConsumerRecord(topicName, null, new byte[511], 1, 0),
-        new BinaryConsumerRecord(topicName, null, new byte[511], 2, 0),
-        new BinaryConsumerRecord(topicName, null, new byte[511], 3, 0)
+        new BinaryConsumerRecord(topicName, null, new byte[511], null, 0, 0),
+        new BinaryConsumerRecord(topicName, null, new byte[511], null, 1, 0),
+        new BinaryConsumerRecord(topicName, null, new byte[511], null, 2, 0),
+        new BinaryConsumerRecord(topicName, null, new byte[511], null, 3, 0)
     );
-    Map<Integer, List<ConsumerRecord<byte[], byte[]>>> referenceSchedule
-        = new HashMap<Integer, List<ConsumerRecord<byte[], byte[]>>>();
+    Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>> referenceSchedule
+        = new HashMap<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>();
     referenceSchedule.put(50, referenceRecords);
 
-    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>> schedules
-        = new HashMap<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>>();
+    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>> schedules
+        = new HashMap<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>>();
     schedules.put(topicName, Arrays.asList(referenceSchedule));
 
     expectCreate(schedules);
@@ -361,9 +361,9 @@ public class ConsumerManagerTest {
     sawCallback = false;
     actualException = null;
     actualLength = 0;
-    readTopic(cid, new ConsumerReadCallback<byte[], byte[]>() {
+    readTopic(cid, new ConsumerReadCallback<byte[], byte[], byte[]>() {
       @Override
-      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[]>> records,
+      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[], byte[]>> records,
                                Exception e) {
         sawCallback = true;
         actualException = e;
@@ -380,9 +380,9 @@ public class ConsumerManagerTest {
     sawCallback = false;
     actualException = null;
     actualLength = 0;
-    readTopic(cid, 512, new ConsumerReadCallback<byte[], byte[]>() {
+    readTopic(cid, 512, new ConsumerReadCallback<byte[], byte[], byte[]>() {
       @Override
-      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[]>> records,
+      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[], byte[]>> records,
                                Exception e) {
         sawCallback = true;
         actualException = e;
@@ -454,7 +454,7 @@ public class ConsumerManagerTest {
     actualException = null;
     actualRecords = null;
     readTopic(cid);
-    verifyRead(Collections.<ConsumerRecord<byte[],byte[]>>emptyList(), null);
+    verifyRead(Collections.<ConsumerRecord<byte[],byte[],byte[]>>emptyList(), null);
     assertTrue("Callback not called", sawCallback);
     assertNull("Callback exception", actualException);
     assertEquals("Callback records should be valid but of 0 size", 0, actualRecords.size());
@@ -491,9 +491,9 @@ public class ConsumerManagerTest {
     EasyMock.replay(mdObserver, consumerFactory);
     String cid = consumerManager.createConsumer(groupName,
             new ConsumerInstanceConfig(EmbeddedFormat.BINARY));
-    Future f = readTopicFuture(cid, topicName, Long.MAX_VALUE, new ConsumerReadCallback<byte[], byte[]>() {
+    Future f = readTopicFuture(cid, topicName, Long.MAX_VALUE, new ConsumerReadCallback<byte[], byte[], byte[]>() {
       @Override
-      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[]>> records,
+      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[], byte[]>> records,
                                Exception e) {
         sawCallback = true;
         actualException = e;
@@ -528,9 +528,9 @@ public class ConsumerManagerTest {
     EasyMock.replay(mdObserver, consumerFactory);
     String cid = consumerManager.createConsumer(groupName,
             new ConsumerInstanceConfig(EmbeddedFormat.BINARY));
-    Future f = readTopicFuture(cid, topicName, Long.MAX_VALUE, new ConsumerReadCallback<byte[], byte[]>() {
+    Future f = readTopicFuture(cid, topicName, Long.MAX_VALUE, new ConsumerReadCallback<byte[], byte[], byte[]>() {
       @Override
-      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[]>> records,
+      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[], byte[]>> records,
                                Exception e) {
         sawCallback = true;
         actualRecords = records;
@@ -547,7 +547,7 @@ public class ConsumerManagerTest {
     assertTrue(delay < backoffMs);
     assertTrue(delay > (backoffMs * 0.5));
     f.get();
-    verifyRead(Collections.<ConsumerRecord<byte[],byte[]>>emptyList(), null);
+    verifyRead(Collections.<ConsumerRecord<byte[],byte[],byte[]>>emptyList(), null);
   }
 
   @Test
@@ -560,9 +560,9 @@ public class ConsumerManagerTest {
     ConsumerState state = consumerManager.getConsumerInstance(groupName, cid);
     long initialExpiration = state.expiration;
 
-    Future f = readTopicFuture(cid, topicName, Long.MAX_VALUE, new ConsumerReadCallback<byte[], byte[]>() {
+    Future f = readTopicFuture(cid, topicName, Long.MAX_VALUE, new ConsumerReadCallback<byte[], byte[], byte[]>() {
       @Override
-      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[]>> records,
+      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[], byte[]>> records,
                                Exception e) {
         sawCallback = true;
         actualRecords = records;
@@ -576,7 +576,7 @@ public class ConsumerManagerTest {
     f.get();
     assertTrue(state.expiration > initialExpiration);
 
-    verifyRead(Collections.<ConsumerRecord<byte[],byte[]>>emptyList(), null);
+    verifyRead(Collections.<ConsumerRecord<byte[],byte[],byte[]>>emptyList(), null);
     initialExpiration = state.expiration;
     consumerManager.commitOffsets(groupName, cid, new ConsumerManager.CommitCallback() {
       @Override
@@ -620,16 +620,16 @@ public class ConsumerManagerTest {
   public void testConsumerExceptions() throws Exception {
     // We should be able to handle an exception thrown by the consumer, then issue another
     // request that succeeds and still see all the data
-    final List<ConsumerRecord<byte[], byte[]>> referenceRecords = referenceRecords(3);
+    final List<ConsumerRecord<byte[], byte[], byte[]>> referenceRecords = referenceRecords(3);
     referenceRecords.add(null); // trigger exception
-    Map<Integer, List<ConsumerRecord<byte[], byte[]>>>
+    Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>
         referenceSchedule =
-        new HashMap<Integer, List<ConsumerRecord<byte[], byte[]>>>();
+        new HashMap<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>();
     referenceSchedule.put(50, referenceRecords);
 
-    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>>
+    Map<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>>
         schedules =
-        new HashMap<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[]>>>>>();
+        new HashMap<String, List<Map<Integer, List<ConsumerRecord<byte[], byte[], byte[]>>>>>();
     schedules.put(topicName, Arrays.asList(referenceSchedule));
 
     expectCreate(schedules);
@@ -651,9 +651,9 @@ public class ConsumerManagerTest {
 
     // Second read should recover and return all the data.
     sawCallback = false;
-    readTopic(cid, new ConsumerReadCallback<byte[], byte[]>() {
+    readTopic(cid, new ConsumerReadCallback<byte[], byte[], byte[]>() {
       @Override
-      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[]>> records,
+      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[], byte[]>> records,
                                Exception e) {
         sawCallback = true;
         assertNull(e);
@@ -675,9 +675,9 @@ public class ConsumerManagerTest {
   }
 
   private void readTopic(final String cid, String topic) throws Exception {
-    readTopic(cid, topic, Long.MAX_VALUE, new ConsumerReadCallback<byte[], byte[]>() {
+    readTopic(cid, topic, Long.MAX_VALUE, new ConsumerReadCallback<byte[], byte[], byte[]>() {
       @Override
-      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[]>> records,
+      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[], byte[]>> records,
                                Exception e) {
         sawCallback = true;
         actualRecords = records;
@@ -708,14 +708,15 @@ public class ConsumerManagerTest {
   /**
    * Returns a list of one record per partition, up to {@code count} partitions
    */
-  private List<ConsumerRecord<byte[], byte[]>> referenceRecords(int count) {
-    List<ConsumerRecord<byte[], byte[]>> records = new ArrayList<>();
+  private List<ConsumerRecord<byte[], byte[], byte[]>> referenceRecords(int count) {
+    List<ConsumerRecord<byte[], byte[], byte[]>> records = new ArrayList<>();
     for (int i = 0; i < count; i++) {
       records.add(
           new BinaryConsumerRecord(
               topicName,
               ("k" + (i + 1)).getBytes(),
-              ("v" + (i + 1)).getBytes(), i, 0)
+              ("v" + (i + 1)).getBytes(),
+              ("h" + (i + 1)).getBytes(), i, 0)
       );
     }
     return records;
@@ -727,9 +728,9 @@ public class ConsumerManagerTest {
     actualRecords = null;
     consumerManager.readTopic(
             groupName, cid, topicName, BinaryConsumerState.class, Long.MAX_VALUE,
-        new ConsumerReadCallback<byte[], byte[]>() {
+        new ConsumerReadCallback<byte[], byte[], byte[]>() {
           @Override
-          public void onCompletion(List<? extends ConsumerRecord<byte[], byte[]>> records,
+          public void onCompletion(List<? extends ConsumerRecord<byte[], byte[], byte[]>> records,
                                    Exception e) {
             actualException = e;
             actualRecords = records;
@@ -742,9 +743,9 @@ public class ConsumerManagerTest {
     sawCallback = false;
     actualRecords = null;
     actualException = null;
-    Future future = readTopicFuture(cid, topic, Long.MAX_VALUE, new ConsumerReadCallback<byte[], byte[]>() {
+    Future future = readTopicFuture(cid, topic, Long.MAX_VALUE, new ConsumerReadCallback<byte[], byte[], byte[]>() {
       @Override
-      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[]>> records,
+      public void onCompletion(List<? extends ConsumerRecord<byte[], byte[], byte[]>> records,
                                Exception e) {
         sawCallback = true;
         actualRecords = records;
@@ -758,7 +759,7 @@ public class ConsumerManagerTest {
     assertNull(future);
   }
 
-  private void verifyRead(List<? extends ConsumerRecord<byte[], byte[]>> records, Class exception) {
+  private void verifyRead(List<? extends ConsumerRecord<byte[], byte[], byte[]>> records, Class exception) {
     assertTrue("Callback was not called", sawCallback);
     if (records == null) {
       assertNull("Callback records should be null", actualRecords);
